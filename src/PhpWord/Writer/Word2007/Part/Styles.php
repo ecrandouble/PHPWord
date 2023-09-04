@@ -172,8 +172,9 @@ class Styles extends AbstractPart
             $type = 'paragraph';
         }
 
-        $xmlWriter->startElement('w:style');
-        $xmlWriter->writeAttribute('w:type', $type);
+
+        $styleLink = $styleName . 'Char';
+        $styleId = $styleName;
 
         // Heading style
         if ($styleType == 'title') {
@@ -181,21 +182,26 @@ class Styles extends AbstractPart
             if (count($arrStyle) > 1) {
                 $styleId = 'Heading' . $arrStyle[1];
                 $styleName = 'heading ' . $arrStyle[1];
-                $styleLink = 'Heading' . $arrStyle[1] . 'Char';
             } else {
                 $styleId = $styleName;
                 $styleName = strtolower($styleName);
-                $styleLink = $styleName . 'Char';
             }
-            $xmlWriter->writeAttribute('w:styleId', $styleId);
-
-            $xmlWriter->startElement('w:link');
-            $xmlWriter->writeAttribute('w:val', $styleLink);
-            $xmlWriter->endElement();
-        } elseif (null !== $paragraphStyle) {
-            // if type is 'paragraph' it should have a styleId
-            $xmlWriter->writeAttribute('w:styleId', $styleName);
         }
+
+        $xmlWriter->startElement('w:style');
+        $xmlWriter->writeAttribute('w:type', 'paragraph');
+        $xmlWriter->writeAttribute('w:styleId', $styleId);
+
+        $xmlWriter->startElement('w:link');
+        $xmlWriter->writeAttribute('w:val', $styleLink);
+        $xmlWriter->endElement();
+
+        $xmlWriter->startElement('w:rsid');
+        $xmlWriter->writeAttribute('w:val', $style->getUid());
+        $xmlWriter->endElement();
+
+        $xmlWriter->startElement('w:qFormat');
+        $xmlWriter->endElement();
 
         // Style name
         $xmlWriter->startElement('w:name');
@@ -222,6 +228,38 @@ class Styles extends AbstractPart
         $styleWriter->write();
 
         $xmlWriter->endElement();
+
+        if ($type !== 'paragraph') {
+            $xmlWriter->startElement('w:style');
+            $xmlWriter->writeAttribute('w:type', 'character');
+
+            // Style name
+            $xmlWriter->writeAttribute('w:styleId', $styleLink);
+
+            $xmlWriter->startElement('w:link');
+            $xmlWriter->writeAttribute('w:val', $styleId);
+            $xmlWriter->endElement();
+
+            $xmlWriter->startElement('w:rsid');
+            $xmlWriter->writeAttribute('w:val', $style->getUid());
+            $xmlWriter->endElement();
+
+            $xmlWriter->startElement('w:name');
+            $xmlWriter->writeAttribute('w:val', $styleLink);
+            $xmlWriter->endElement();
+
+            // w:pPr
+            if (null !== $paragraphStyle) {
+                $styleWriter = new ParagraphStyleWriter($xmlWriter, $paragraphStyle);
+                $styleWriter->write();
+            }
+
+            // w:rPr
+            $styleWriter = new FontStyleWriter($xmlWriter, $style);
+            $styleWriter->write();
+
+            $xmlWriter->endElement();
+        }
     }
 
     /**

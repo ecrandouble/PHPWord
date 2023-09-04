@@ -268,6 +268,13 @@ class Font extends AbstractStyle
     private $position;
 
     /**
+     * Unique id
+     *
+     * @var int
+     */
+    private $uid;
+
+    /**
      * Create new font style.
      *
      * @param string $type Type of font
@@ -276,7 +283,12 @@ class Font extends AbstractStyle
     public function __construct($type = 'text', $paragraph = null)
     {
         $this->type = $type;
+        $this->uid = uniqid();
         $this->setParagraph($paragraph);
+    }
+
+    public function getUid() {
+        return $this->uid;
     }
 
     /**

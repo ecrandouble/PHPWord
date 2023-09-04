@@ -18,6 +18,7 @@
 namespace PhpOffice\PhpWord\Writer\Word2007\Element;
 
 use PhpOffice\PhpWord\Element\AbstractElement as Element;
+use PhpOffice\PhpWord\Element\Text;
 use PhpOffice\PhpWord\Settings;
 use PhpOffice\PhpWord\Shared\Text as SharedText;
 use PhpOffice\PhpWord\Shared\XMLWriter;
@@ -98,7 +99,22 @@ abstract class AbstractElement
             $this->xmlWriter->startElement('w:p');
             // Paragraph style
             if (method_exists($this->element, 'getParagraphStyle')) {
-                $this->writeParagraphStyle();
+                $style = $this->element instanceof Text ? $this->element->getFontStyle() : null;
+                if (is_string($style)) {
+                    $fontStyle = \PhpOffice\PhpWord\Style::getStyle($style);
+
+                    if ($fontStyle instanceof \PhpOffice\PhpWord\Style\Font) {
+                        // Write attributes on parent elements
+                        $this->xmlWriter->writeAttribute('w:rsidRPr', $fontStyle->getUid());
+                        $this->xmlWriter->writeAttribute('w:rsidP', $fontStyle->getUid());
+                    }
+                    $this->writeFontStyle();
+                } else {
+                    $this->writeParagraphStyle();
+                }
+
+            } else {
+                $this->writeFontStyle();
             }
         }
         $this->writeCommentRangeStart();
