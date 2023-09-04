@@ -43,7 +43,7 @@ class Text extends AbstractElement
 
         $xmlWriter->startElement('w:r');
 
-        if (!is_string($element->getFontStyle())) {
+        if (!is_string($element->getFontStyle()) || $this->withoutP) {
             $this->writeFontStyle();
         }
 

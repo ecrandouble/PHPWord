@@ -42,7 +42,12 @@ class Font extends AbstractStyle
         if ($isStyleName) {
             $style = \PhpOffice\PhpWord\Style::getStyle($this->style);
 
-            $xmlWriter->startElement('w:pPr');
+            if ($this->withoutP) {
+                $xmlWriter->startElement('w:rPr');
+            } else {
+                $xmlWriter->startElement('w:pPr');
+            }
+
             $xmlWriter->startElement('w:pStyle');
             $xmlWriter->writeAttribute('w:val', $this->style);
             $xmlWriter->endElement();

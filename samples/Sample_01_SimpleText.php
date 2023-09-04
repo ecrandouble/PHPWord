@@ -48,6 +48,8 @@ $fontStyle['size'] = 20;
 $textrun = $section->addTextRun();
 $textrun->addText('I am inline styled ', $fontStyle);
 $textrun->addText('with ');
+$textrun->addText('sytle definition', $fontStyleName);
+$textrun->addText(', ');
 $textrun->addText('color', ['color' => '996699']);
 $textrun->addText(', ');
 $textrun->addText('bold', ['bold' => true]);

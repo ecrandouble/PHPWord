@@ -205,7 +205,7 @@ abstract class AbstractElement
         $styleObject = $this->element->$method();
 
         /** @var \PhpOffice\PhpWord\Writer\Word2007\Style\AbstractStyle $styleWriter Type Hint */
-        $styleWriter = new $class($this->xmlWriter, $styleObject);
+        $styleWriter = new $class($this->xmlWriter, $styleObject, $this->withoutP);
         if (method_exists($styleWriter, 'setIsInline')) {
             $styleWriter->setIsInline(true);
         }

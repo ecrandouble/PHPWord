@@ -42,6 +42,13 @@ abstract class AbstractStyle
     protected $style;
 
     /**
+     * Without paragraph.
+     *
+     * @var bool
+     */
+    protected $withoutP;
+
+    /**
      * Write style.
      */
     abstract public function write();
@@ -51,10 +58,11 @@ abstract class AbstractStyle
      *
      * @param \PhpOffice\PhpWord\Style\AbstractStyle|string $style
      */
-    public function __construct(XMLWriter $xmlWriter, $style = null)
+    public function __construct(XMLWriter $xmlWriter, $style = null, $withoutP = false)
     {
         $this->xmlWriter = $xmlWriter;
         $this->style = $style;
+        $this->withoutP = $withoutP;
     }
 
     /**
