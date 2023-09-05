@@ -40,16 +40,22 @@ class Font extends AbstractStyle
 
         $isStyleName = $this->isInline && null !== $this->style && is_string($this->style);
         if ($isStyleName) {
+            /**
+             * @var \PhpOffice\PhpWord\Style\Font
+             */
             $style = \PhpOffice\PhpWord\Style::getStyle($this->style);
 
             if ($this->withoutP) {
+                $xmlWriter->writeAttribute('w:rsidRPr', $style->getUid());
                 $xmlWriter->startElement('w:rPr');
+                $xmlWriter->startElement('w:rStyle');
+                $xmlWriter->writeAttribute('w:val', $this->style.'Char');
             } else {
                 $xmlWriter->startElement('w:pPr');
+                $xmlWriter->startElement('w:pStyle');
+                $xmlWriter->writeAttribute('w:val', $this->style);
             }
 
-            $xmlWriter->startElement('w:pStyle');
-            $xmlWriter->writeAttribute('w:val', $this->style);
             $xmlWriter->endElement();
             if ($style instanceof \PhpOffice\PhpWord\Style\Font) {
                 $xmlWriter->writeElementIf($style->isRTL(), 'w:rtl');
